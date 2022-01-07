@@ -19,11 +19,11 @@ patch_router = APIRouter()
 @patch_router.patch("/{sheet_id_input}/{worksheet_name}", status_code=201)
 def patch_api(
     sheet_id_input:str,
-    workesheet_name:str,
+    worksheet_name:str,
     patch_request: PatchRequest  
 ):
     ss = GoogleSheetConnection(sheet_id_input)
-    df = ss.read_sheet(workesheet_name)
+    df = ss.read_sheet(worksheet_name)
 
     df = df.loc[df[patch_request.filter_key] == patch_request.filter_value]
 
@@ -40,7 +40,7 @@ def patch_api(
         for modifier in patch_request.to_update:
             df.loc[idx, modifier.item_key] = modifier.item_value
 
-        ss.write_on_sheet_loc(workesheet_name, df.loc[[idx]], get_row_by_index(idx), 1)
+        ss.write_on_sheet_loc(worksheet_name, df.loc[[idx]], get_row_by_index(idx), 1)
 
 
     return {"status": "success", "message": "records updated"}
